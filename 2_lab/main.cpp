@@ -1,6 +1,14 @@
 #include <iostream>
 #include <set>
 #include <random>
+#include<vector>
+#include<chrono>
+#include<iostream>
+#include<algorithm>
+#include<cassert>
+#include<fstream>
+#include<string>
+#include <algorithm>
 
 class AbstractState
 {
@@ -36,16 +44,21 @@ public:
 };
 
 class SetState : public AbstractState {
-private:
+protected:
     std::set<int> const states;
 
 public:
+
     SetState(): states() { }
     SetState(std::set<int> const &src): states(src) { }
 
     bool contains(int s) const override
     {
         return states.count(s) > 0;
+    }
+    std::set<int> getSet() const
+    {
+        return states;
     }
 };
 
@@ -80,6 +93,24 @@ public:
     }
 };
 
+class SetUnificationState : public SetState {
+private:
+    std::set<int> const states;
+    std::set<int> UnifiSets(const SetState& s1, const SetState& s2)
+    {
+        std::set<int> new_set = (s1.getSet());
+        std::set<int> new_set_1 = s2.getSet();
+        new_set.insert(new_set_1.begin(), new_set_1.end());
+        return new_set;
+    }
+
+public:
+
+    SetUnificationState(): SetState() { }
+    SetUnificationState(SetState &s1, SetState &s2): SetState(UnifiSets(s1,s2)) { }
+
+};
+
 class ProbabilityTest {
 private:
     unsigned seed;
@@ -107,19 +138,23 @@ double CheckProbability(const AbstractState& s, int seed, int test_min, int test
 }
 
 int main(int argc, const char * argv[]) {
+    std::ifstream fin("test_vhod.txt");
+    std::ofstream fout_s("2SegmentS.txt");
+    std::ofstream fout_ss("2SetS.txt");
+    std::ofstream fout_d("2DiscretS.txt");
     DiscreteState d(1);
     SegmentState s(0,10);
     SetState ss({1, 3, 5, 7, 23, 48, 57, 60, 90, 99});
     ProbabilityTest pt(10,0,100,100000);
-    std::cout << pt(d) << std::endl;
-    std::cout << pt(s) << std::endl;
-    std::cout << pt(ss) << std::endl;
+    //std::cout << pt(d) << std::endl;
     SegmentMinusState sm(0,10, {1,3,5,7,9,11});
     SegmentPlusState sp(0,10, {1,12,14,16});
-    std::cout << sm.contains(0) << sm.contains(1) << sm.contains(11) << std::endl;
-    std::cout << sp.contains(0) << sp.contains(1) << sp.contains(13) << std::endl;
-    //std::cout << pt(sp) << std::endl;
-    //std::cout << pt(sm) << std::endl;
-    std::cout << CheckProbability(sp,10,0,100,100000) << std::endl;
+    int max = 0;
+    while(fin >> max)
+    {
+        //fout_s << (10.0/max) << " " << CheckProbability(s,10,0,max,100000) << "\n";
+        //fout_ss << (10.0/max) << " " << CheckProbability(ss,191,0,max,100000) << "\n";
+        fout_d << (1.0/(max+1.0)) << " " << CheckProbability(d,100,0,max,100000) << "\n";
+    }
     return 0;
 }

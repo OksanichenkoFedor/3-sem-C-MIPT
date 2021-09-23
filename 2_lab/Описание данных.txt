@@ -1,0 +1,13 @@
+Я хранил данные с результатами экспериментов в тектовых файлах:
+1 задание:
+Segment SegmentS.txt (seed = 10) График 1.Segment.png
+Set SetS.txt (seed = 191) График 1.Set.png
+Discrete DiscreteS.txt (seed = 10) График 1.Discrete.png
+
+2 задание
+Segment 2SegmentS.txt (seed = 10, test_count = 100000) График 2.Segment.png
+Set 2SetS.txt (seed = 191, test_count = 100000) График 2.Set.png
+Discrete 2DiscreteS.txt (seed = 100, test_count = 100000) График 2.Discrete.png
+
+3 задание выполнено в 1,2 так как я и так 3 типа разных рассматривал
+ и получил, что форма зависимости не зависит от типа состояния.
