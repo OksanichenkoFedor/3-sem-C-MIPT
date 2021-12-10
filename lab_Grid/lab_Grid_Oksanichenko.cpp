@@ -13,6 +13,17 @@ public:
 
  }
 
+ Grid<T> (const Grid<T>& G)
+ {
+     this->x_size = G.get_xsize();
+     this->y_size = G.get_ysize();
+     this->memory = new T[x_size*y_size];
+     for(int i = 0;i<x_size*y_size;i++)
+     {
+         this->memory[i] = G.memory[i];
+     }
+ }
+
  T operator()(size_t x_idx, size_t y_idx) const
  {
     return memory[x_idx*y_size+y_idx];
@@ -38,6 +49,30 @@ public:
  {
      for (size_t i=0;i<x_size*y_size;i++){
          memory[i] = A;
+     }
+     return *this;
+ }
+ Grid& operator=(Grid<T> G)
+ {
+     for (size_t i=0;i<x_size*y_size;i++){
+         this->memory[i] = 0;
+     }
+     size_t x_s = this->get_xsize();
+     if (x_s > G.get_xsize())
+     {
+         x_s = G.get_xsize();
+     }
+     size_t y_s = this->get_ysize();
+     if (y_s > G.get_ysize())
+     {
+         y_s = G.get_ysize();
+     }
+
+     for (size_t i=0;i<x_s;i++){
+         for (size_t j = 0; j < y_s;j++)
+         {
+             this->memory[i*this->y_size+j] = G.memory[i*G.get_ysize()+j];
+         }
      }
      return *this;
  }
@@ -97,9 +132,18 @@ int main()
     g = 1.0;
     g(1,1) = 2.0;
 
-    std::cout << g << std::endl;
+    Grid<float> g1(4,4);
+    g1 = g;
+
+    Grid<float> g2(g);
+
+    {
+        Grid<float> g2(1,1);
+    }
+
+    std::cout << g2 << std::endl;
     //std::cin >> g;
-    std::cout << g << std::endl;
+    std::cout << g1 << std::endl;
     //std::cout << g(1,1) << std::endl;
     //std::cout << g(0,0) << std::endl;
     //std::cout << &memory[1];
